@@ -418,7 +418,7 @@ namespace NBug
 		/// very uncomfortable to wait for bug reports to be sent after an application crash, so it is best to leave this feature on.
 		/// Default value is true.
 		/// </summary>
-		private static bool DeferredReporting { get; set; }
+		public static bool DeferredReportingOnApplicationExit { get; set; }
 
 		/// <summary>
 		/// Adds a destination based on a connection string.
@@ -463,7 +463,7 @@ namespace NBug
 			ExitApplicationImmediately = Convert.ToBoolean(GetDefaultValue(() => ExitApplicationImmediately));
 			HandleProcessCorruptedStateExceptions = Convert.ToBoolean(GetDefaultValue(() => HandleProcessCorruptedStateExceptions));
 			ReleaseMode = Convert.ToBoolean(GetDefaultValue(() => ReleaseMode));
-			DeferredReporting = Convert.ToBoolean(GetDefaultValue(() => DeferredReporting));
+			DeferredReportingOnApplicationExit = Convert.ToBoolean(GetDefaultValue(() => DeferredReportingOnApplicationExit));
 
 			if (config.XPathSelectElement("system.diagnostics") != null && config.XPathSelectElement("system.diagnostics/sharedListeners") != null)
 			{
@@ -531,9 +531,9 @@ namespace NBug
 				{
 					ReleaseMode = Convert.ToBoolean(value);
 				}
-				else if (property == GetPropertyName(() => DeferredReporting))
+				else if (property == GetPropertyName(() => DeferredReportingOnApplicationExit))
 				{
-					DeferredReporting = Convert.ToBoolean(value);
+					DeferredReportingOnApplicationExit = Convert.ToBoolean(value);
 				}
 				else
 				{
@@ -729,7 +729,7 @@ namespace NBug
 				                              || appSetting.Attribute("name").Value == GetPropertyName(() => ExitApplicationImmediately)
 				                              || appSetting.Attribute("name").Value == GetPropertyName(() => HandleProcessCorruptedStateExceptions)
 				                              || appSetting.Attribute("name").Value == GetPropertyName(() => ReleaseMode)
-				                              || appSetting.Attribute("name").Value == GetPropertyName(() => DeferredReporting))
+				                              || appSetting.Attribute("name").Value == GetPropertyName(() => DeferredReportingOnApplicationExit))
 			                          select appSetting;
 			applicationSettings.Remove();
 
@@ -743,7 +743,7 @@ namespace NBug
 			AddApplicationSetting(config, ExitApplicationImmediately, () => ExitApplicationImmediately);
 			AddApplicationSetting(config, HandleProcessCorruptedStateExceptions, () => HandleProcessCorruptedStateExceptions);
 			AddApplicationSetting(config, ReleaseMode, () => ReleaseMode);
-			AddApplicationSetting(config, DeferredReporting, () => DeferredReporting);
+			AddApplicationSetting(config, DeferredReportingOnApplicationExit, () => DeferredReportingOnApplicationExit);
 
 			if (StoragePath == Enums.StoragePath.Custom)
 			{
@@ -916,7 +916,7 @@ namespace NBug
 			ExitApplicationImmediately = Properties.Settings.Default.ExitApplicationImmediately;
 			HandleProcessCorruptedStateExceptions = Properties.Settings.Default.HandleProcessCorruptedStateExceptions;
 			ReleaseMode = Properties.Settings.Default.ReleaseMode;
-			DeferredReporting = Properties.Settings.Default.DeferredReporting;
+			DeferredReportingOnApplicationExit = Properties.Settings.Default.DeferredReportingOnApplicationExit;
 
 			// Connection strings
 			Cipher = Convert.FromBase64String(Properties.Settings.Default.Cipher);
