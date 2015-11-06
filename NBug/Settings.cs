@@ -1,4 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Settings.cs" company="NBug Project">
 //   Copyright (c) 2011 - 2013 Teoman Soygul. Licensed under MIT license.
 // </copyright>
@@ -76,7 +76,7 @@ namespace NBug
 			// Crucial startup settings
 			Resources = new PublicResources();
 			EntryAssembly = (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()) ?? Assembly.GetCallingAssembly();
-
+				
 				// GetEntryAssembly() is null if there is no initial GUI/CLI
 			NBugDirectory = Path.GetDirectoryName(Assembly.GetCallingAssembly().Location) ?? Environment.CurrentDirectory;
 			AdditionalReportFiles = new List<FileMask>();
@@ -418,7 +418,7 @@ namespace NBug
 		/// very uncomfortable to wait for bug reports to be sent after an application crash, so it is best to leave this feature on.
 		/// Default value is true.
 		/// </summary>
-		public static bool DeferredReportingOnApplicationExit { get; set; }
+		public static bool DeferredReporting { get; set; }
 
 		/// <summary>
 		/// Adds a destination based on a connection string.
@@ -463,7 +463,7 @@ namespace NBug
 			ExitApplicationImmediately = Convert.ToBoolean(GetDefaultValue(() => ExitApplicationImmediately));
 			HandleProcessCorruptedStateExceptions = Convert.ToBoolean(GetDefaultValue(() => HandleProcessCorruptedStateExceptions));
 			ReleaseMode = Convert.ToBoolean(GetDefaultValue(() => ReleaseMode));
-			DeferredReportingOnApplicationExit = Convert.ToBoolean(GetDefaultValue(() => DeferredReportingOnApplicationExit));
+			DeferredReporting = Convert.ToBoolean(GetDefaultValue(() => DeferredReporting));
 
 			if (config.XPathSelectElement("system.diagnostics") != null && config.XPathSelectElement("system.diagnostics/sharedListeners") != null)
 			{
@@ -531,15 +531,15 @@ namespace NBug
 				{
 					ReleaseMode = Convert.ToBoolean(value);
 				}
-				else if (property == GetPropertyName(() => DeferredReportingOnApplicationExit))
+				else if (property == GetPropertyName(() => DeferredReporting))
 				{
-					DeferredReportingOnApplicationExit = Convert.ToBoolean(value);
+					DeferredReporting = Convert.ToBoolean(value);
 				}
 				else
 				{
 					Logger.Error(
 						string.Format(
-							"There is a problem with the 'applicationSettings' section of the configuration file. The property read from the file '{0}' is undefined. This is probably a refactoring problem, or a malformed config file.",
+							"There is a problem with the 'applicationSettings' section of the configuration file. The property read from the file '{0}' is undefined. This is probably a refactoring problem, or a malformed config file.", 
 							property));
 				}
 			}
@@ -697,8 +697,8 @@ namespace NBug
 				config.Root.Element("connectionStrings")
 				      .Add(
 					      new XElement(
-						      "add",
-						      new XAttribute("name", "NBug.Properties.Settings." + GetPropertyName(() => Cipher)),
+						      "add", 
+						      new XAttribute("name", "NBug.Properties.Settings." + GetPropertyName(() => Cipher)), 
 						      new XAttribute("connectionString", Convert.ToBase64String(Cipher))));
 			}
 			else
@@ -729,7 +729,7 @@ namespace NBug
 				                              || appSetting.Attribute("name").Value == GetPropertyName(() => ExitApplicationImmediately)
 				                              || appSetting.Attribute("name").Value == GetPropertyName(() => HandleProcessCorruptedStateExceptions)
 				                              || appSetting.Attribute("name").Value == GetPropertyName(() => ReleaseMode)
-				                              || appSetting.Attribute("name").Value == GetPropertyName(() => DeferredReportingOnApplicationExit))
+				                              || appSetting.Attribute("name").Value == GetPropertyName(() => DeferredReporting))
 			                          select appSetting;
 			applicationSettings.Remove();
 
@@ -743,7 +743,7 @@ namespace NBug
 			AddApplicationSetting(config, ExitApplicationImmediately, () => ExitApplicationImmediately);
 			AddApplicationSetting(config, HandleProcessCorruptedStateExceptions, () => HandleProcessCorruptedStateExceptions);
 			AddApplicationSetting(config, ReleaseMode, () => ReleaseMode);
-			AddApplicationSetting(config, DeferredReportingOnApplicationExit, () => DeferredReportingOnApplicationExit);
+			AddApplicationSetting(config, DeferredReporting, () => DeferredReporting);
 
 			if (StoragePath == Enums.StoragePath.Custom)
 			{
@@ -766,9 +766,9 @@ namespace NBug
 			        .Element("NBug.Properties.Settings")
 			        .Add(
 				        new XElement(
-					        "setting",
-					        new XAttribute("name", GetPropertyName(propertyExpression)),
-					        new XAttribute("serializeAs", "String"),
+					        "setting", 
+					        new XAttribute("name", GetPropertyName(propertyExpression)), 
+					        new XAttribute("serializeAs", "String"), 
 					        new XElement("value", content)));
 		}
 
@@ -877,7 +877,7 @@ namespace NBug
 			catch (Exception exception)
 			{
 				throw new NBugRuntimeException(
-					"There is no internal default value supplied for '" + typeof(T).Name + "' or the supplied value is invalid. See the inner exception for details.",
+					"There is no internal default value supplied for '" + typeof(T).Name + "' or the supplied value is invalid. See the inner exception for details.", 
 					exception);
 			}
 		}
@@ -916,7 +916,7 @@ namespace NBug
 			ExitApplicationImmediately = Properties.Settings.Default.ExitApplicationImmediately;
 			HandleProcessCorruptedStateExceptions = Properties.Settings.Default.HandleProcessCorruptedStateExceptions;
 			ReleaseMode = Properties.Settings.Default.ReleaseMode;
-			DeferredReportingOnApplicationExit = Properties.Settings.Default.DeferredReportingOnApplicationExit;
+			DeferredReporting = Properties.Settings.Default.DeferredReporting;
 
 			// Connection strings
 			Cipher = Convert.FromBase64String(Properties.Settings.Default.Cipher);
