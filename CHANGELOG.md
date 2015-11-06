@@ -1,5 +1,8 @@
 # TBD
 
+* Ability to send bug reports immediately
+* Improve ability to attach extra files to bug report.
+* Fix build on Mono.
 * Handle invalid/corrupt report files gracefully.
 * Exception report sent to the developer is always in English rather than user's language.
 

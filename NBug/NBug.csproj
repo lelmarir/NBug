@@ -46,6 +46,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\NBug.XML</DocumentationFile>
+    <NoWarn>1591;1574</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -106,7 +107,7 @@
     <Compile Include="Core\UI\WinForms\Panels\ExceptionDetails.Designer.cs">
       <DependentUpon>ExceptionDetails.cs</DependentUpon>
     </Compile>
-    <Compile Include="Core\Util\Storage\AdditionalFiles.cs" />
+    <Compile Include="Core\Util\Storage\FileMask.cs" />
     <Compile Include="Core\Util\Web\StreamUpload.cs" />
     <Compile Include="Core\Util\ConnectionStringParser.cs" />
     <Compile Include="Core\Util\PublicResources.cs" />
@@ -323,14 +324,14 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName)==Release copy "$(TargetPath)" "$(SolutionDir)packages\NBug\lib\net40-client" /Y
+    <PostBuildEvent Condition="$(OS) == 'WINDOWS_NT'">if $(ConfigurationName)==Release copy "$(TargetPath)" "$(SolutionDir)packages\NBug\lib\net40-client" /Y
 if $(ConfigurationName)==Release copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)packages\NBug\lib\net40-client" /Y
 if $(ConfigurationName)==Release copy "$(TargetDir)$(TargetName).xml" "$(SolutionDir)packages\NBug\lib\net40-client" /Y
 if $(ConfigurationName)==Release copy "$(TargetPath)" "$(SolutionDir)packages\NBug\tools" /Y
 if $(ConfigurationName)==Release copy "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)packages\NBug\tools" /Y</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

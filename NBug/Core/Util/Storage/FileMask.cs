@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NBug.Core.Util.Storage
 {
-    public class AdditionalFiles
+    public class FileMask
     {
         /// <summary>
         /// Gets or sets a the file path. The files can use * or ? in the same way as DOS modifiers.
@@ -14,31 +14,33 @@ namespace NBug.Core.Util.Storage
         public string FilePath { get; set; }
 
         /// <summary>
-        /// Gets or sets the the kind of access other processes can have access to the file white it's being zipped for the report. Defaults to FileShare.Read but other files might require FileShare.ReadWrite (i.e. log4net log files that are constantly open and can only be access with FileShare.ReadWrite).
+        /// Gets or sets the the kind of access other processes can have access to the file white it's being zipped for the report.
+        /// Defaults to FileShare.Read but other files might require FileShare.ReadWrite
+        /// (i.e. log4net log files that are constantly open and can only be access with FileShare.ReadWrite).
         /// </summary>
         public FileShare FileShare { get; set; }
 
-        public AdditionalFiles(String path)
+        public FileMask(String path)
         {
             this.FilePath = path;
             FileShare = FileShare.Read;
         }
 
-        public static implicit operator String(AdditionalFiles o)
+        public static implicit operator String(FileMask o)
         {
             return o == null ? null : o.FilePath;
         }
 
-        public static implicit operator AdditionalFiles(String o)
+        public static implicit operator FileMask(String o)
         {
-            return o == null ? null : new AdditionalFiles(o);
+            return o == null ? null : new FileMask(o);
         }
 
         /// <summary>
         /// Add all additional files represented by this instance to the zip file using the zipStorer
         /// </summary>
         /// <param name="zipStorer"></param>
-        public void AddToZip(ZipStorer zipStorer)
+        internal void AddToZip(ZipStorer zipStorer)
         {
             // Join before spliting because the mask may have some folders inside it
             var fullPath = Path.Combine(Settings.NBugDirectory, FilePath);
