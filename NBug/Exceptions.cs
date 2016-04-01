@@ -62,10 +62,22 @@ namespace NBug
 		/// Note that this function uses the NBug configuration so it will use the pre-configured UI and submission settings.
 		/// </summary>
 		/// <param name="exception">The exception to submit as the bug report.</param>
-		public static void Report(Exception exception)
+        /// <param name="displayUI">If must display the UI to the user (if configured)</param>
+		public static void Report(Exception exception, bool displayUI=true)
 		{
-			// Below never exits application by itself (by design) so execution of the application continues normally
-			new BugReport().Report(exception, ExceptionThread.Main);
+            NBug.Enums.UIMode mode = NBug.Settings.UIMode;
+            if (displayUI == false)
+            {                
+                NBug.Settings.UIMode = NBug.Enums.UIMode.None;
+            }
+            
+            // Below never exits application by itself (by design) so execution of the application continues normally
+            new BugReport().Report(exception, ExceptionThread.Main);
+
+            if (displayUI == false)
+            {
+                NBug.Settings.UIMode = mode;
+            }
 		}
 	}
 }
